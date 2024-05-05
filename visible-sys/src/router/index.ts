@@ -8,12 +8,16 @@ export const routes = [
   {
     path: '/yolo',
     name: 'YOLO',
+    meta: {
+      title: 'YOLO'
+    },
     children: [{
       path: '/yolo/v9',
       name: 'YOLOV9',
       component: () => import('@/pages/YOLO/V9.vue'),
       meta: {
-        icon: 'UserOutlined'
+        icon: 'Food',
+        title: 'YOLOV9'
       }
     }]
   },
