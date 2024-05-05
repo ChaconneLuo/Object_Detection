@@ -19,6 +19,22 @@ export const routes = [
         icon: 'Food',
         title: 'YOLOV9'
       }
+    }, {
+      path: '/yolo/v8',
+      name: 'YOLOV8',
+      component: () => import('@/pages/YOLO/V8.vue'),
+      meta: {
+        icon: 'Apple',
+        title: 'YOLOV8'
+      }
+    }, {
+      path: '/yolo/v5',
+      name: 'YOLOV5',
+      component: () => import('@/pages/YOLO/V5.vue'),
+      meta: {
+        icon: 'Burger',
+        title: 'YOLOV5'
+      }
     }]
   },
 ]
