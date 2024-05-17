@@ -14,6 +14,7 @@ export default defineConfig(async () => ({
     vue(),
     UnoCSS(),
     AutoImport({
+      imports: ['vue', 'vue-router'],
       resolvers: [
         ElementPlusResolver(),
         IconsResolver({
@@ -36,6 +37,7 @@ export default defineConfig(async () => ({
   resolve: {
     alias: {
       '@': '/src',
+      '@data': '/data'
     },
   },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
@@ -48,7 +50,7 @@ export default defineConfig(async () => ({
     strictPort: true,
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
+      ignored: ["**/src-tauri/**", "/src-tauri/result.jpg"],
     },
   },
 }));

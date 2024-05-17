@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+visible-sys/data
+visible-sys/src-tauri/result.jpg
+visible-sys/temp
+node_modules
 
 # C extensions
 *.so

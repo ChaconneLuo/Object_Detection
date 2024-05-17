@@ -28,14 +28,22 @@ export const routes = [
         title: 'YOLOV8'
       }
     }, {
-      path: '/yolo/v5',
-      name: 'YOLOV5',
-      component: () => import('@/pages/YOLO/V5.vue'),
+      path: '/yolo/v5s',
+      name: 'YOLOV5s',
+      component: () => import('@/pages/YOLO/V5s.vue'),
       meta: {
         icon: 'Burger',
-        title: 'YOLOV5'
+        title: 'YOLOV5s'
       }
     }]
+  },
+  {
+    path: '/compare',
+    name: 'Compare',
+    component: () => import('@/pages/Compare.vue'),
+    meta: {
+      title: 'Compare'
+    },
   },
 ]
 

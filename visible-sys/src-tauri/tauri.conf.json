@@ -12,20 +12,46 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "dialog": {
+        "all": true,
+        "open": true
+      },
+      "fs": {
+        "all": true,
+        "exists": false,
+        "readDir": true,
+        "readFile": true,
+        "removeDir": false,
+        "removeFile": false,
+        "renameFile": false,
+        "writeFile": false
+      },
       "shell": {
         "all": false,
         "open": true
+      },
+      "protocol": {
+        "asset": true,
+        "assetScope": [
+          "**"
+        ]
+      },
+      "clipboard": {
+        "all": true,
+        "writeText": true,
+        "readText": true
       }
     },
     "windows": [
       {
         "title": "visible-sys",
-        "width": 800,
-        "height": 600
+        "width": 1000,
+        "height": 800,
+        "fileDropEnabled": false
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self'; asset: https://asset.localhost"
     },
     "bundle": {
       "active": true,
