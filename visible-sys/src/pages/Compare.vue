@@ -32,8 +32,11 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="24">
-        检测火势个数：{{ checkedCnt }}
+      <el-col :span="24" class="flex flex-col">
+        检测出fire级别火势：{{ checked.filter((item) => item[4] === 'fire' && getLength(item) > 100).length }}
+        检测出fire_middle级别火势：{{ checked.filter((item) => item[4] === 'fire' && getLength(item) <= 100).length }}
+          检测出fire_small级别火势：{{ checked.filter((item) => item[4] === 'fire_small').length }}
+          检测出火苗个数：{{ checked.length }}
       </el-col>
     </el-row>
   </div>
@@ -55,7 +58,7 @@ const modelValue = ref<string>('');
 const imgLink = ref<string>('');
 const imgRef = ref();
 let imgPath = '';
-const checkedCnt = ref<number>(0)
+const checked = ref<any[]>([])
 
 async function getAlgorithms() {
   const response: string = await invoke('get_algorithms');
@@ -71,7 +74,7 @@ const useModel = async () => {
       { algorithm: algorithmValue.value, model: modelValue.value, img: imgPath }).then((res) => {
         // handledImg.value = convertFileSrc((res as string).slice(1, -1))
         console.log(JSON.parse(res))
-        checkedCnt.value = JSON.parse(res)?.length
+        checked.value = JSON.parse(res)
         draw_image_and_boxes(imgPath, JSON.parse(res))
       })
   }
@@ -109,9 +112,12 @@ const draw_image_and_boxes = (file, boxes: any[]) => {
   }
 }
 
+const getLength = (position: number[]) => {
+  return Math.sqrt(Math.pow(position[0] - position[2], 2) + Math.pow(position[1] - position[3], 2));
+}
+
 onMounted(() => {
   getAlgorithms();
-
 })
 
 watch(algorithmValue, async (newValue) => {
