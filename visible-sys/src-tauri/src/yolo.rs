@@ -4,19 +4,21 @@ use ort::{Environment, SessionBuilder, Value};
 use std::{sync::Arc, vec};
 
 #[tauri::command]
-pub fn detect(algorithm: &str, model: &str, img: &str) -> String {
+pub fn detect(algorithm: &str, model: &str, img: &str, iou_value: f32, conf_value: f32) -> String {
     let buf = std::fs::read(img).unwrap_or(vec![]);
-    let boxes = detect_objects_on_image(buf, algorithm, model);
+    let boxes = detect_objects_on_image(buf, algorithm, model, iou_value, conf_value);
     return serde_json::to_string(&boxes).unwrap_or_default();
 }
 pub fn detect_objects_on_image(
     buf: Vec<u8>,
     algorithm: &str,
     model: &str,
+    iou_value: f32,
+    conf_value: f32,
 ) -> Vec<(f32, f32, f32, f32, &'static str, f32)> {
     let (input, img_width, img_height) = prepare_input(buf);
     let output = run_model(input, algorithm, model);
-    return process_output(output, img_width, img_height);
+    return process_output(output, img_width, img_height, iou_value, conf_value);
 }
 
 // Function used to convert input image to tensor,
@@ -71,6 +73,8 @@ fn process_output(
     output: Array<f32, IxDyn>,
     img_width: u32,
     img_height: u32,
+    iou_value: f32,
+    conf_value: f32,
 ) -> Vec<(f32, f32, f32, f32, &'static str, f32)> {
     let mut boxes = Vec::new();
     let output = output.slice(s![.., .., 0]);
@@ -83,7 +87,7 @@ fn process_output(
             .map(|(index, value)| (index, *value))
             .reduce(|accum, row| if row.1 > accum.1 { row } else { accum })
             .unwrap();
-        if prob < 0.5 {
+        if prob < conf_value {
             continue;
         }
         println!("{} {}", class_id, prob);
@@ -105,7 +109,7 @@ fn process_output(
         result.push(boxes[0]);
         boxes = boxes
             .iter()
-            .filter(|box1| iou(&boxes[0], box1) < 0.7)
+            .filter(|box1| iou(&boxes[0], box1) < iou_value)
             .map(|x| *x)
             .collect()
     }

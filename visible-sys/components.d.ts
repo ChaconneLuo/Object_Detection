@@ -24,6 +24,7 @@ declare module 'vue' {
     ElOption: typeof import('element-plus/es')['ElOption']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Greet: typeof import('./src/components/Greet.vue')['default']

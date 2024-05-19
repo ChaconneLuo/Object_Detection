@@ -17,10 +17,30 @@
         </el-select>
       </el-col>
     </el-row>
-    <el-row>
-      <el-col :span="12">
+    <el-row :gutter="20">
+      <el-col :span="7">
         <el-button type="success" plain @click="openFile">Open Picture</el-button>
         <el-button type="success" plain @click="useModel">Check</el-button>
+      </el-col>
+      <el-col :span="7">
+        <div class="flex flex-row w-100% items-center">
+          <span>iou:</span>
+          <el-slider v-model="iou" :min="0" :max="1" :step="0.01" placement="bottom" />
+        </div>
+      </el-col>
+      <el-col :span="7">
+        <div class="flex flex-row w-100% items-center">
+          <span>conf:</span>
+          <el-slider v-model="conf" :min="0" :max="1" :step="0.01" placement="bottom" />
+        </div>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24" class="flex flex-col">
+        检测出fire级别火势：{{ checked.filter((item) => item[4] === 'fire' && getLength(item) > 70).length }}
+        检测出fire_middle级别火势：{{ checked.filter((item) => item[4] === 'fire' && getLength(item) <= 70).length }}
+          检测出fire_small级别火势：{{ checked.filter((item) => item[4] === 'fire_small').length }}
+          检测出火苗个数：{{ checked.length }}
       </el-col>
     </el-row>
     <el-row>
@@ -31,14 +51,7 @@
         <canvas ref="imgRef" class="w-100%"></canvas>
       </el-col>
     </el-row>
-    <el-row>
-      <el-col :span="24" class="flex flex-col">
-        检测出fire级别火势：{{ checked.filter((item) => item[4] === 'fire' && getLength(item) > 100).length }}
-        检测出fire_middle级别火势：{{ checked.filter((item) => item[4] === 'fire' && getLength(item) <= 100).length }}
-          检测出fire_small级别火势：{{ checked.filter((item) => item[4] === 'fire_small').length }}
-          检测出火苗个数：{{ checked.length }}
-      </el-col>
-    </el-row>
+
   </div>
 </template>
 <script setup lang="ts">
@@ -59,6 +72,8 @@ const imgLink = ref<string>('');
 const imgRef = ref();
 let imgPath = '';
 const checked = ref<any[]>([])
+const iou = ref<number>(0.5);
+const conf = ref<number>(0.5);
 
 async function getAlgorithms() {
   const response: string = await invoke('get_algorithms');
@@ -71,7 +86,7 @@ const useModel = async () => {
   // handledImg.value = ''
   if (imgLink.value) {
     invoke('detect',
-      { algorithm: algorithmValue.value, model: modelValue.value, img: imgPath }).then((res) => {
+      { algorithm: algorithmValue.value, model: modelValue.value, img: imgPath, iouValue: iou.value, confValue: conf.value }).then((res) => {
         // handledImg.value = convertFileSrc((res as string).slice(1, -1))
         console.log(JSON.parse(res))
         checked.value = JSON.parse(res)
@@ -113,7 +128,7 @@ const draw_image_and_boxes = (file, boxes: any[]) => {
 }
 
 const getLength = (position: number[]) => {
-  return Math.sqrt(Math.pow(position[0] - position[2], 2) + Math.pow(position[1] - position[3], 2));
+  return Math.sqrt(Math.pow(position[2] - position[0], 2) + Math.pow(position[3] - position[1], 2));
 }
 
 onMounted(() => {
