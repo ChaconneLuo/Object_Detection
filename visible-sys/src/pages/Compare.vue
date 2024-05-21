@@ -2,13 +2,13 @@
   <div>
     <el-row :gutter="2">
       <el-col :span="12">
-        <span>Algorithm: </span>
+        <span>算法: </span>
         <el-select v-model="algorithmValue" placeholder="Select" size="large" style="width: 240px" :teleported="false" popper-class="select_popper">
           <el-option v-for="item in algorithmOptions" :key="item.algorithm" :label="item.algorithm" :value="item.algorithm" />
         </el-select>
       </el-col>
       <el-col :span="12">
-        <span>Model: </span>
+        <span>模型: </span>
         <el-select v-model="modelValue" placeholder="Select" size="large" style="width: 240px" :teleported="false" popper-class="select_popper">
           <el-option v-for="item in modelOptions" :key="item" :label="item" :value="item" />
         </el-select>
@@ -16,8 +16,8 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="7">
-        <el-button type="success" plain @click="openFile">Open Picture</el-button>
-        <el-button type="success" plain @click="useModel">Check</el-button>
+        <el-button type="success" plain @click="openFile">打开图片</el-button>
+        <el-button type="success" plain @click="useModel">识别</el-button>
       </el-col>
       <el-col :span="7">
         <div class="flex flex-row w-100% items-center">
@@ -85,9 +85,9 @@ const useModel = async () => {
   if (imgLink.value) {
     invoke('detect', { algorithm: algorithmValue.value, model: modelValue.value, img: imgPath, iouValue: iou.value, confValue: conf.value }).then((res) => {
       // handledImg.value = convertFileSrc((res as string).slice(1, -1))
-      console.log(JSON.parse(res))
-      checked.value = JSON.parse(res)
-      draw_image_and_boxes(imgPath, JSON.parse(res))
+      console.log(JSON.parse(res as string))
+      checked.value = JSON.parse(res as string)
+      draw_image_and_boxes(imgPath, JSON.parse(res as string))
     })
   }
 }
@@ -101,7 +101,7 @@ const openFile = () => {
     draw_image_and_boxes(imgPath, [])
   })
 }
-const draw_image_and_boxes = (file, boxes: any[]) => {
+const draw_image_and_boxes = (file: any, boxes: any[]) => {
   const img = new Image()
   img.src = convertFileSrc(file as string)
   img.onload = () => {
