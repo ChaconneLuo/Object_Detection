@@ -38,8 +38,7 @@
           <span>检测出fire级别火势: {{ checked.filter((item) => item[4] === 'fire' && getLength(item) > 70).length }}</span>
           <span>检测出fire_middle级别火势: {{ checked.filter((item) => item[4] === 'fire' && getLength(item) <= 70).length }}</span>
           <span>检测出fire_small级别火势: {{ checked.filter((item) => item[4] === 'fire_small').length }}</span>
-          <span>检测出火苗个数: {{ checked.filter((item) => item[4] !== 'smoke').length }}</span>
-          <span>检测出烟雾个数: {{ checked.filter((item) => item[4] === 'smoke').length }}</span>
+          <span>检测出火苗个数: {{ checked.length }}</span>
         </div>
       </el-col>
     </el-row>
@@ -115,6 +114,17 @@ const draw_image_and_boxes = (file, boxes: any[]) => {
     ctx.lineWidth = 3
     ctx.font = '18px serif'
     boxes.forEach(([x1, y1, x2, y2, label]: [number, number, number, number, string]) => {
+      if (algorithmValue.value === 'yolov5') {
+        console.log(algorithmValue.value)
+        let w = Math.abs(x2 - x1)
+        let h = Math.abs(y2 - y1)
+        console.log(x1, y1, x2, y2, w, h)
+        x1 = (x1 + w / 2) * 16
+        x2 = (x2 - w / 2) * 16
+        y1 = (y1 + h / 2) * 16
+        y2 = (y2 - h / 2) * 16
+        console.log(x1, y1, x2, y2)
+      }
       ctx.strokeRect(x1, y1, x2 - x1, y2 - y1)
       ctx.fillStyle = '#00ff00'
       const width = ctx.measureText(label).width

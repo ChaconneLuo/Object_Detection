@@ -49,7 +49,6 @@ const resultData = [
   },
 ].map((item) => ({
   ...item,
-  img: '../../data/yolov5s' + item.img,
+  img: '../../data/yolov5' + item.img,
 }))
-
 </script>
