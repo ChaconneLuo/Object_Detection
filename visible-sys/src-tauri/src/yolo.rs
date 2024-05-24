@@ -21,9 +21,6 @@ pub fn detect_objects_on_image(
     return process_output(output, img_width, img_height, iou_value, conf_value);
 }
 
-// Function used to convert input image to tensor,
-// required as an input to YOLOv8 object detection
-// network.
 // Returns the input tensor, original image width and height
 fn prepare_input(buf: Vec<u8>) -> (Array<f32, IxDyn>, u32, u32) {
     let img = image::load_from_memory(&buf).unwrap();
@@ -41,9 +38,6 @@ fn prepare_input(buf: Vec<u8>) -> (Array<f32, IxDyn>, u32, u32) {
     return (input, img_width, img_height);
 }
 
-// Function used to pass provided input tensor to
-// YOLOv8 neural network and return result
-// Returns raw output of YOLOv8 network
 fn run_model(input: Array<f32, IxDyn>, algorithm: &str, model: &str) -> Array<f32, IxDyn> {
     let env = Arc::new(Environment::builder().with_name("YOLOv8").build().unwrap());
     let model = SessionBuilder::new(&env)
@@ -65,10 +59,6 @@ fn run_model(input: Array<f32, IxDyn>, algorithm: &str, model: &str) -> Array<f3
     return output;
 }
 
-// Function used to convert RAW output from YOLOv8 to an array
-// of detected objects. Each object contain the bounding box of
-// this object, the type of object and the probability
-// Returns array of detected objects in a format [(x1,y1,x2,y2,object_type,probability),..]
 fn process_output(
     output: Array<f32, IxDyn>,
     img_width: u32,
@@ -117,9 +107,6 @@ fn process_output(
     return result;
 }
 
-// Function calculates "Intersection-over-union" coefficient for specified two boxes
-// https://pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/.
-// Returns Intersection over union ratio as a float number
 fn iou(
     box1: &(f32, f32, f32, f32, &'static str, f32),
     box2: &(f32, f32, f32, f32, &'static str, f32),
@@ -127,8 +114,6 @@ fn iou(
     return intersection(box1, box2) / union(box1, box2);
 }
 
-// Function calculates union area of two boxes
-// Returns Area of the boxes union as a float number
 fn union(
     box1: &(f32, f32, f32, f32, &'static str, f32),
     box2: &(f32, f32, f32, f32, &'static str, f32),
@@ -140,8 +125,7 @@ fn union(
     return box1_area + box2_area - intersection(box1, box2);
 }
 
-// Function calculates intersection area of two boxes
-// Returns Area of intersection of the boxes as a float number
+
 fn intersection(
     box1: &(f32, f32, f32, f32, &'static str, f32),
     box2: &(f32, f32, f32, f32, &'static str, f32),
@@ -155,4 +139,4 @@ fn intersection(
     return (x2 - x1) * (y2 - y1);
 }
 
-const YOLO_FIRE_CLASSES: [&str; 4] = ["fire", "fire_small", "fire", "fire_small"];
+const YOLO_FIRE_CLASSES: [&str; 6] = ["fire_small","fire","2","1","0","background"];

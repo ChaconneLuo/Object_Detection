@@ -9,7 +9,7 @@ export const routes = [
     path: '/yolo',
     name: 'YOLO',
     meta: {
-      title: 'YOLO',
+      title: 'YOLO训练数据展示',
     },
     children: [
       {
@@ -32,11 +32,11 @@ export const routes = [
       },
       {
         path: '/yolo/v5',
-        name: 'YOLOV5s',
+        name: 'YOLOV5',
         component: () => import('@/pages/YOLO/V5.vue'),
         meta: {
           icon: 'Burger',
-          title: 'YOLOV5s',
+          title: 'YOLOV5',
         },
       },
     ],
@@ -46,7 +46,7 @@ export const routes = [
     name: 'Compare',
     component: () => import('@/pages/Compare.vue'),
     meta: {
-      title: 'Compare',
+      title: '识别效果比对',
     },
   },
 ]
