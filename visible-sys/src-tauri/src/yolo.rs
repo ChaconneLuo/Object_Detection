@@ -155,4 +155,4 @@ fn intersection(
     return (x2 - x1) * (y2 - y1);
 }
 
-const YOLO_FIRE_CLASSES: [&str; 4] = ["fire", "fire_small", "fire", "fire_small"];
+const YOLO_FIRE_CLASSES: [&str; 2] = ["fire", "fire_small"];
