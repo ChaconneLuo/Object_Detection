@@ -3,13 +3,17 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 export const routes = [
   {
     path: '/',
-    redirect: '/yolo/v9',
+    redirect: '/login',
+  },
+  {
+    path: '/login',
+    component: () => import('@/pages/Login.vue'),
   },
   {
     path: '/yolo',
     name: 'YOLO',
     meta: {
-      title: 'YOLO训练数据展示',
+      title: 'YOLO训练数据可视化',
     },
     children: [
       {

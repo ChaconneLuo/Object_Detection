@@ -27,8 +27,8 @@
       </el-col>
       <el-col :span="7">
         <div class="flex flex-row w-100% items-center">
-          <span>conf:</span>
-          <el-slider v-model="conf" :min="0" :max="1" :step="0.01" placement="bottom" />
+          <span>pred:</span>
+          <el-slider v-model="pred" :min="0" :max="1" :step="0.01" placement="bottom" />
         </div>
       </el-col>
     </el-row>
@@ -71,7 +71,7 @@ const imgRef = ref()
 let imgPath = ''
 const checked = ref<any[]>([])
 const iou = ref<number>(0.5)
-const conf = ref<number>(0.5)
+const pred = ref<number>(0.5)
 
 async function getAlgorithms() {
   const response: string = await invoke('get_algorithms')
@@ -83,7 +83,7 @@ async function getAlgorithms() {
 const useModel = async () => {
   // handledImg.value = ''
   if (imgLink.value) {
-    invoke('detect', { algorithm: algorithmValue.value, model: modelValue.value, img: imgPath, iouValue: iou.value, confValue: conf.value }).then((res) => {
+    invoke('detect', { algorithm: algorithmValue.value, model: modelValue.value, img: imgPath, iouValue: iou.value, predValue: pred.value }).then((res) => {
       // handledImg.value = convertFileSrc((res as string).slice(1, -1))
       console.log(JSON.parse(res as string))
       checked.value = JSON.parse(res as string)
@@ -113,24 +113,30 @@ const draw_image_and_boxes = (file: any, boxes: any[]) => {
     ctx.strokeStyle = '#00FF00'
     ctx.lineWidth = 3
     ctx.font = '18px serif'
-    boxes.forEach(([x1, y1, x2, y2, label]: [number, number, number, number, string]) => {
+    boxes.forEach(([x1, y1, x2, y2, label, prob]: [number, number, number, number, string]) => {
       if (algorithmValue.value === 'yolov5') {
-        console.log(algorithmValue.value)
-        let w = Math.abs(x2 - x1)
-        let h = Math.abs(y2 - y1)
-        console.log(x1, y1, x2, y2, w, h)
-        x1 = (x1 + w / 2) * 16
-        x2 = (x2 - w / 2) * 16
-        y1 = (y1 + h / 2) * 16
-        y2 = (y2 - h / 2) * 16
+        // console.log(algorithmValue.value)
+        // let w = Math.abs(x2 - x1)
+        // let h = Math.abs(y2 - y1)
+        // console.log(x1, y1, x2, y2, w, h)
+        let img_width = 320,
+          img_height = 320
+        // x1 = x1 * img_width - (x2 * img_width) / 2
+        // y1 = y1 * img_height - (y2 * img_height) / 2
+        // x2 = x2 * img_width
+        // y2 = y2 * img_height
+        x1 = x1 * img_width
+        y1 = y1 * img_height
+        x2 = x2 * img_width
+        y2 = y2 * img_height
         console.log(x1, y1, x2, y2)
       }
       ctx.strokeRect(x1, y1, x2 - x1, y2 - y1)
       ctx.fillStyle = '#00ff00'
-      const width = ctx.measureText(label).width
+      const width = ctx.measureText(label + ' ' + prob).width
       ctx.fillRect(x1, y1, width + 10, 25)
       ctx.fillStyle = '#000000'
-      ctx.fillText(label, x1, y1 + 18)
+      ctx.fillText(label + ' ' + prob, x1, y1 + 18)
     })
   }
 }
